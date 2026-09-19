@@ -23,7 +23,7 @@ A hands-on, beginner-to-advanced path through Generative AI with LangChain — b
 | 08 | Agents | ⬜ | Tool use, function calling, MCP |
 | 09 | Evaluation & Guardrails | ⬜ | Testing, RAGAS, safety |
 
-*(✅ done · 🔶 in progress · ⬜ planned — update these as you go)*
+*(✅ done · 🔶 in progress · ⬜ planned — will keep pushing whatever i have learned)*
 
 ## Setup
 
