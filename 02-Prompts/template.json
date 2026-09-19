@@ -1,0 +1,13 @@
+{
+    "name": null,
+    "input_variables": [
+        "paper_input",
+        "style_input",
+        "length_input"
+    ],
+    "template": "You are an expert research paper explainer.\n\nExplain the following research paper:\n\nPaper: {paper_input}\n\nExplanation style: {style_input}\n\nExplanation length: {length_input}\n\nProvide a clear and accurate explanation suitable for the requested style and length.",
+    "template_format": "f-string",
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null
+}
