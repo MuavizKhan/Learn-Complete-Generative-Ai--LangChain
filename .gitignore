@@ -30,3 +30,6 @@ Thumbs.db
 
 # Logs / runtime-generated files
 *.log
+
+# PDF Documents
+LangChain Notes.pdf
