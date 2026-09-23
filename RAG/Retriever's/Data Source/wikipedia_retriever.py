@@ -3,6 +3,7 @@ from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
 
 
+
 class WikipediaRetriever(BaseRetriever):
 
     wiki: object
