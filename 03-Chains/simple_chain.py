@@ -49,6 +49,8 @@ try:
     # Without it, this raises ImportError rather than printing anything.
     # Another one for that still-empty requirements.txt from lesson one.
     chain.get_graph().print_ascii()
-
+    
 except Exception as e:
     print(f"Something went wrong running the chain: {e}")
+
+
