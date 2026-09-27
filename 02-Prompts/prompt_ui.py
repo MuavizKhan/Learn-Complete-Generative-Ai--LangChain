@@ -1,3 +1,26 @@
+# ---------------------------------------------------------------------------
+# prompt_ui.py
+#
+# WHAT THIS FILE DEMONSTRATES
+# ---------------------------------------------------------------------------
+# The last piece of 02-Prompts, pulling several ideas together into an
+# actual clickable app instead of a terminal script:
+#   - Streamlit turns plain Python variables into a browser UI -- no HTML.
+#   - load_prompt() loads a PromptTemplate that was saved to disk as JSON
+#     (template.json) instead of being written inline in Python -- the
+#     "single message, Dynamic" cell from the grid a few files back,
+#     finally shown in its own file.
+#   - `template | model` is LCEL: piping a template straight into a model
+#     so ONE .invoke() does both steps at once. Every earlier file called
+#     .invoke() on a template, then separately called .invoke() on a
+#     model. This is your first real look at chaining -- the entire
+#     subject of 03-Chains and 04-Runnables, arriving a little early.
+#
+# Run this with `streamlit run prompt_ui.py`, not `python prompt_ui.py` --
+# a plain Python run won't start the web server Streamlit needs to show
+# anything.
+# ---------------------------------------------------------------------------
+
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -11,24 +34,39 @@ from langchain_core.prompts import load_prompt
 load_dotenv()
 
 
-# Hugging Face hosted model
-llm = HuggingFaceEndpoint(
-    repo_id="openai/gpt-oss-120b",
-    task="text-generation",
-    max_new_tokens=512,
-    temperature=0.3,
-)
+# WHY @st.cache_resource?
+# Streamlit reruns this ENTIRE script top to bottom on every interaction --
+# picking a different paper, a different style, anything, not just
+# clicking Summarize. Without this decorator, the model client gets
+# rebuilt from scratch every single time, for no reason. This tells
+# Streamlit to build it once and reuse the same object on every rerun.
+@st.cache_resource
+def get_model():
+    llm = HuggingFaceEndpoint(
+        repo_id="openai/gpt-oss-120b",
+        task="text-generation",
+        max_new_tokens=512,
+        temperature=0.3,
+    )
+    return ChatHuggingFace(llm=llm)
 
-model = ChatHuggingFace(llm=llm)
+
+model = get_model()
 
 
 # Streamlit UI
 st.header("Research Tool")
 
 
+# "Select..." as the first option means the dropdown doesn't quietly land
+# on a real paper before anyone has actually chosen one -- your own notes'
+# version of this exact snippet has this option; the file in the repo had
+# dropped it, which means loading the page already has a paper "selected"
+# by accident.
 paper_input = st.selectbox(
     "Select Research Paper Name",
     [
+        "Select...",
         "Attention Is All You Need",
         "BERT: Pre-training of Deep Bidirectional Transformers",
         "GPT-3: Language Models are Few-Shot Learners",
@@ -66,6 +104,10 @@ template = load_prompt(
 
 # Generate explanation - use 'chain'
 if st.button("Summarize"):
+
+    if paper_input == "Select...":
+        st.warning("Please choose a research paper first.")
+        st.stop()
 
     chain = template | model
 
